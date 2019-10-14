@@ -49,6 +49,9 @@
 				border-right: 1px solid white;
 			}
 
+			.formula {
+				margin-bottom: 10px !important;
+			}
 		</style>
 	</head>
 	<body>
@@ -94,7 +97,7 @@
 							\Leftrightarrow
 						$$
 						$$
-							\forall \varepsilon > 0
+							\forall \varepsilon > 0 \,
 							\exists \delta = \delta (\varepsilon) > 0:
 							 \forall x_0 < | x - x_0 |  < \delta 
 							 \Rightarrow | f(x) - A | < \varepsilon
@@ -130,6 +133,46 @@
 						образ этой окрестности лежит в окрестности точки А.
 					</script>
 				</section>
+
+				<section data-markdown data-separator-notes="^Note:">
+						<script type="text/template">
+							Пример:
+							--------------
+							
+							$$
+								\lim_{x \rightarrow \infty} 
+								\dfrac{2x^2-3x-5}{1+x+3x^2}
+								= \dfrac{\infty}{\infty}
+							$$
+
+							$$
+								\lim_{x \rightarrow \infty}
+								\dfrac{
+									\dfrac{2x^2-3x-5}{x^2}
+								}{
+									\dfrac{1+x+3x^2}{x^2}
+								} = 
+								\lim_{x \rightarrow \infty}
+								\dfrac{
+									\dfrac{2x^2}{x^2} - 
+									\dfrac{3x}{x^2}^{\rightarrow 0} - 
+									\dfrac{5}{x^2}^{\rightarrow 0}
+								}{
+									\dfrac{1}{x^2}^{\rightarrow 0} + 
+									\dfrac{x}{x^2}^{\rightarrow 0} +
+									\dfrac{3x^2}{x^2}
+								} = 
+							$$
+							$$
+								\lim_{x \rightarrow \infty} \dfrac{2}{3} = 
+								\dfrac{2}{3}
+							$$
+
+
+							Note:
+							Примеры решения пределов
+						</script>
+					</section>
 
 				<section data-markdown data-separator-notes="^Note:">
 						<script type="text/template">
@@ -178,25 +221,26 @@
 							$$
 
 							Note:
-
+							На слайде представлены 4 способа записи производных
 						</script>
 					</section>
-
-				<section data-markdown data-separator-notes="^Note:">
+					
+					<section data-markdown data-separator-notes="^Note:">
 						<script type="text/template">
 							### Способы записи производных
-
+							
 							#### По Лагранжу
 							$$
-								f'(x_0) = f^{(1)}(x_0) = f^{(I)}(x_0)
+							f'(x_0) = f^{(1)}(x_0) = f^{(I)}(x_0)
 							$$
 							$$
-								f''(x_0), f'''(x_0), f^{(IV)}(x_0)
+							f''(x_0), f'''(x_0), f^{(IV)}(x_0)
 							$$
-
-
+							
+							
 							Note:
-
+							На слайде представлены 4 способа записи производных
+							
 						</script>
 					</section>
 
@@ -222,9 +266,68 @@
 							$$
 
 							Note:
-
+							Константу можно выносить за производную  
+							Производная суммы или разности равна сумме или 
+							разности производных  
+							Производная произведения равна производной первого 
+							множителя
+							на второй плюс производная второго множителя на 
+							первый  
+							Производная частного равна отношению разности 
+							производной числителя на знаменатель
+							и производной знаменателя на числитель к квадрату 
+							знаменателя  
+							Производная сложной функции равна производной 
+							внешней функции на производную внутренней.
 						</script>
 					</section>
+
+
+					<section data-markdown data-separator-notes="^Note:">
+							<script type="text/template">
+								Пример:
+								--------------
+								
+								$$
+									y' = (3\sin(x))' = 3(\sin(x))' = 3\cos(x)
+								$$
+								$$
+									y' = (x^2+7x-e^x)' = (x^2)'+7(x)'-(e^x)' = 
+									2x+7-e^x
+								$$
+								$$
+									y' = (x\ln(x))' = (x)'\ln(x) + x(\ln(x))' =
+									1\cdot\ln(x) + x\cdot\dfrac{1}{x} = 
+								$$
+								$$
+									\ln(x)+1
+								$$
+								$$
+									y' = \left(\dfrac{\sin(x)}{x}\right)' = 
+									\dfrac{
+										(\sin(x))'x - \sin(x)(x)'
+									}{x^2} =
+									\dfrac{x\cos(x)-\sin(x)}{x^2}
+								$$	
+								Note:
+								Примеры решения производных
+							</script>
+						</section>
+
+					<section data-markdown data-separator-notes="^Note:">
+							<script type="text/template">
+								Пример:
+								--------------
+								
+								$$
+									y' = (\cos(x^2))' = 
+									-\sin(x^2)(x^2)' =
+									-2x\sin(x^2)
+								$$
+								Note:
+								Примеры решения производных
+							</script>
+						</section>
 
 				<section data-markdown data-separator-notes="^Note:">
 						<script type="text/template">
@@ -248,6 +351,28 @@
 						</script>
 					</section>
 
+
+					<section data-markdown data-separator-notes="^Note:">
+						<script type="text/template">
+							Пример:
+							--------------
+							
+							$$
+								z(x,y) = x^2 - y^2 + 2xy + 5
+							$$
+							$$
+								\dfrac{\partial z}{\partial x} =
+								2x+2y
+							$$
+							$$
+								\dfrac{\partial z}{\partial y} =
+								2x-2y
+							$$
+							Note:
+							Примеры решения частных производных
+						</script>
+					</section>
+
 				<section data-markdown data-separator-notes="^Note:">
 						<script type="text/template">
 							### Полный дифференциал
@@ -265,10 +390,39 @@
 							$$
 
 							Note:
-
+							Полный дифференциал - это сумма частных 
+							производных по каждой переменной
 
 						</script>
 					</section>
+
+
+					<section data-markdown data-separator-notes="^Note:">
+							<script type="text/template">
+								Пример:
+								--------------
+								
+								$$
+									z = e^{xy}
+								$$
+
+								$$
+									\dfrac{\partial z}{\partial x} =
+									e^{xy}y
+								$$
+								$$
+									\dfrac{\partial z}{\partial y} =
+									e^{xy}x
+								$$
+								$$
+									dz = ye^{xy}\,dx + xe^{xy}\,dy =
+									e^{xy}(y\,dx+x\,dy)
+								$$
+								Note:
+								Примеры решения полного дифференциала
+							</script>
+						</section>
+
 				<section data-markdown data-separator-notes="^Note:">
 						<script type="text/template">
 							### Физический смысл производной
@@ -278,7 +432,13 @@
 							$v(t) = x'(t)$, а ускорение $a(t) = v'(t) = x''(t)$
 
 							Note:
-
+							Первая производная в точке - есть 
+							мгновенная скорость
+							этой точки в момент времени t, 
+							двигающейся по кривой x(t)  
+							Вторая производная в точке - есть 
+							ускорение этой точки в момент времени t,
+							двигающейся по кривой x(t)
 
 						</script>
 					</section>
@@ -295,7 +455,8 @@
 							$$
 
 							Note:
-
+							Производная в точке x_0 - есть тангенс угла наклона
+							касательной к функции f(x)
 
 						</script>
 					</section>
@@ -309,7 +470,10 @@
 							$$
 							
 							Note:
-
+							Уравнение касательной задается производной
+							функции в точке касания умноженную на разность
+							переменной и точки касания плюс значение функции
+							в точке касания
 
 						</script>
 					</section>
@@ -433,6 +597,19 @@
 						}
 					}
 				]
+			});
+
+			Reveal.configure({
+				keyboard: {
+					68: function () {
+						Reveal.configure({
+							showNotes: (
+								Reveal.getConfig().showNotes ? 
+									false: true
+								)
+						});
+					}
+				}
 			});
 
 			//Запускаем программы только после полной загрузки
