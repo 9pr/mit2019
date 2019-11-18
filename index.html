@@ -244,6 +244,8 @@
 						</script>
 					</section>
 
+				<section id="diffTable"></section>
+
 				<section data-markdown data-separator-notes="^Note:">
 						<script type="text/template">
 							### Правила дифференцирования
@@ -423,6 +425,18 @@
 							</script>
 						</section>
 
+				<section>
+					<h3>Поиск производной</h3>
+					<label> Функция:
+						<input type="text" value="cos(x*y)" id="expression">
+					</label>
+					<label> Переменная:
+						<input type="text" value="x=3,y=4" id="variable">
+					</label>
+					Производная:
+					<output id="result"></output>
+				</section>
+
 				<section data-markdown data-separator-notes="^Note:">
 						<script type="text/template">
 							### Физический смысл производной
@@ -482,6 +496,20 @@
 							Note:
 							Примеры решения задач на физический смысл
 						</script>
+					</section>
+
+					<section>
+						<h3>Поиск скорости и ускорения</h3>
+						<label> Путь:
+							<input type="text" value="x^4+6x^2+cos(x)+1" id="path">
+						</label>
+						<label> Точка:
+							<input type="text" value="12" id="point"> <br>
+						</label>
+						Скорость:
+						<output id="speed"></output> <br>
+						Ускорение:
+						<output id="acceleration"></output> <br>
 					</section>
 
 				<section data-markdown data-separator-notes="^Note:">
@@ -547,13 +575,119 @@
 						</script>
 					</section>
 
+					<section>
+						<h3>Уравнение касательной</h3>
+						<label> Функция:
+							<input type="text" value="x^4+6x^2+1" id="func">
+						</label>
+						<label> Абцисса точки касания:
+							<input type="text" value="4" id="pointTan"> <br>
+						</label>
+						Точка касания:
+						<output id="tangentPoint"></output> <br>
+						Уравнение касательной:
+						<output id="tangent"></output>
+						<div id="plot" style="height: 400px;"></div>
+					</section>
+
+					<section data-markdown data-separator-notes="^Note:">
+						<script type="text/template">
+							Исходный код
+							------------
+						</script>
+					</section>
+
+					<section data-markdown data-separator-notes="^Note:">
+						<script type="text/template">
+							### Таблица производных
+							
+							```
+							let diffTable = () => {
+								let func = [
+									'C',
+									'x^n',
+									'a^x',
+									'e^x',
+									'log(x,a)',
+									'log(x)',
+									'sin(x)',
+									'cos(x)',
+									'tan(x)',
+									'cot(x)',
+									'asin(x)',
+									'acos(x)',
+									'atan(x)',
+									'acot(x)',
+								];
+								let slide;
+								for (let i in func) {
+									if (i%7 == 0) {
+										slide = document.createElement('section');
+										if (i == 0) {
+											slide.className = 'present';
+										} else {
+											slide.className = 'future';
+										}
+										slide.innerHTML = `<h3>Таблица производных</h3>`;
+									}
+									let h = math.parse(func[i]);
+									let x = math.parse('x');
+									let expression = h.toTex();
+									let diff = diffResult(h, x).toTex();
+									slide.innerHTML += '<p>'+katex.renderToString(`(${expression})' = ${diff}`) +'</p>';
+									if (i%7 == 6 || func.length - i == 1) {
+										document.querySelector('#diffTable').appendChild(slide);
+									}
+								}
+								document.querySelector('#diffTable').style = 
+									"display:block; top:0";
+							}
+							```
+						</script>
+					</section>
+
+					<section data-markdown data-separator-notes="^Note:">
+						<script type="text/template">
+							### Поиск производных
+
+						</script>
+					</section>
+
+					<section data-markdown data-separator-notes="^Note:">
+						<script type="text/template">
+							### Мгновенная скорость и ускорение
+
+						</script>
+					</section>
+
+					<section data-markdown data-separator-notes="^Note:">
+						<script type="text/template">
+							### Построение уравнения касательной
+
+						</script>
+					</section>
+
+					<section data-markdown data-separator-notes="^Note:">
+						<script type="text/template">
+							### График касательной
+
+						</script>
+					</section>
+
+					<section data-background="image/4.jpg">
+					</section>
+
+					<section data-background="image/15.jpg">
+					</section>
+
+					<section data-background="image/2.jpg">
+					</section>
+
 					<section data-markdown data-separator-notes="^Note:">
 						<script type="text/template">
 							Спасибо за внимание
 						</script>
 					</section>
-
-
 			</div>
 		</div>
 
@@ -561,6 +695,9 @@
 		<script src="lib/js/head.min.js"></script>
 		<script src="js/reveal.js"></script>
 		<script src="js/lib.js"></script>
+		<script src="lib/js/math.min.js"></script>
+		<script src="lib/js/algebrite.bundle-for-browser.js"></script>
+		<script src="lib/js/plotly.min.js"></script>
 
 		<script>
 			// More info about config & dependencies:
@@ -685,8 +822,87 @@
 				}
 			});
 
+			let diffResult = (h, x) => {
+				return math.derivative(h,x);
+			}
+
+			let diffTable = () => {
+				let func = [
+					'C',
+					'x^n',
+					'a^x',
+					'e^x',
+					'log(x,a)',
+					'log(x)',
+					'sin(x)',
+					'cos(x)',
+					'tan(x)',
+					'cot(x)',
+					'asin(x)',
+					'acos(x)',
+					'atan(x)',
+					'acot(x)',
+				];
+				let slide;
+				for (let i in func) {
+					if (i%7 == 0) {
+						slide = document.createElement('section');
+						if (i == 0) {
+							slide.className = 'present';
+						} else {
+							slide.className = 'future';
+						}
+						slide.innerHTML = `<h3>Таблица производных</h3>`;
+					}
+					let h = math.parse(func[i]);
+					let x = math.parse('x');
+					let expression = h.toTex();
+					let diff = diffResult(h, x).toTex();
+					slide.innerHTML += '<p>'+katex.renderToString(`(${expression})' = ${diff}`) +'</p>';
+					if (i%7 == 6 || func.length - i == 1) {
+						document.querySelector('#diffTable').appendChild(slide);
+					}
+				}
+				document.querySelector('#diffTable').style = 
+					"display:block; top:0";
+			}
+
+			let tangent = () => {
+				let h = math.parse(document.querySelector('#func').value);
+				let x = math.parse('x');
+				let val = document.querySelector('#pointTan').value;
+				let f = h.compile().evaluate({x:val});
+				let tangent = diffResult(h,x).evaluate({x:val}) +
+					'(x-'+val+')+'+f;
+				let expand = Algebrite.expand(tangent).toString();
+				console.log(expand);
+				katex.render(math.parse(expand).toTex(),
+					document.querySelector('#tangent'));
+				katex.render('('+val+','+f+')',
+				    document.querySelector('#tangentPoint'));
+			}
+
+			let diff = () => {
+
+			}
+
+			let speed = () => {
+
+			}
+
 			//Запускаем программы только после полной загрузки
 			window.onload = () =>  {
+				diffTable();
+
+				document.querySelector('#expression').onkeyup = diff;
+				document.querySelector('#variable').onkeyup = diff;
+
+				document.querySelector('#path').onkeyup = speed;
+				document.querySelector('#point').onkeyup = speed;
+
+				document.querySelector('#func').onkeyup = tangent;
+				document.querySelector('#pointTan').onkeyup = tangent;
+
 
 			}
 		</script>
