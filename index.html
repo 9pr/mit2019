@@ -17,7 +17,7 @@
 
 		<!-- Printing and PDF exports -->
 		<script>
-			var link = document.createElement( 'link' );
+			let link = document.createElement( 'link' );
 			link.rel = 'stylesheet';
 			link.type = 'text/css';
 			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
@@ -29,11 +29,39 @@
 			.formula {
 				margin-bottom: 10px !important;
 			}
+			.offscreen {
+				clip: rect(1px 1px 1px 1px);
+				clip: rect(1px, 1px, 1px, 1px);
+				height: 1px;
+				overflow: hidden;
+				position: absolute;
+				white-space: nowrap;
+				width: 1px;
+			}
+			.offscreen:focus {
+				position: relative;
+				clip: auto;
+				width: auto;
+				height: auto;
+				overflow: auto;
+			}
 		</style>
 
 	</head>
 	<body>
 
+		<!-- Кнопка для включения и отключения субтитр -->
+		<div class="chalkboard-button" id="toggle-chalkboard" 
+			style="position: absolute; z-index: 30; font-size: 24px;
+			left: 20px; bottom: 30px;" >
+			<a href="#" id="noteswitch" title="Включение/отключение
+				заметок к слайду">
+				<i class="fa fa-sticky-note" aria-label="
+				Заметки к слайду"></i>
+			</a>
+		</div>
+
+		<!-- Разметка презентации -->
 		<div class="reveal">
 			<div class="slides">
 
@@ -42,8 +70,20 @@
 						Дифференциальное исчисление
 						==================
 						
+						<!-- Легенда для скринридеров -->
+						<span class="offscreen">
+							Для перемещения между слайдами следует 
+							пользоваться клавишами:
+							<kbd>Space</kbd>
+							<kbd>Left</kbd>
+							<kbd>Right</kbd>.
+							Для включения заметок, используйте клавишу
+							<kbd>D</kbd>
+						</span>
+
 						Note:
 						Дифференциальное исчисление
+	
 					</script>
 				</section>
 
@@ -493,7 +533,7 @@
 						Производная в точке $x_0$ равна тангенсу угла наклона
 						касательной к графику функции $f(x)$ в этой точки.
 						$$
-							f'(x_0) = \tan(\alpha), \text{где} \alpha - 
+							f'(x_0) = \tan(\alpha), \text{где } \alpha - 
 							\text{угол наклона касательной}
 						$$
 
@@ -643,22 +683,36 @@
 					<script type="text/template">
 						### График касательной
 
+						Note: Исходный код функции по построению
+							графика касательной
 					</script>
 				</section>
 
 				<section data-background="image/4.jpg">
+					<aside class="notes">
+						Изображение слова Math
+					</aside>
 				</section>
 
 				<section data-background="image/15.jpg">
+					<aside class="notes">
+						Изображение улитки Фибоначи
+					</aside>
 				</section>
 
 				<section data-background="image/2.jpg"  data-menu-title="Картинка">
+					<aside class="notes">
+						Изображение транспортира и калькулятора
+					</aside>
 				</section>
 
 				<section data-markdown data-separator-notes="^Note:">
 					<script type="text/template">
 						Спасибо за внимание
 					</script>
+					<span class="offscreen">
+						Конец презентации
+					</span>
 				</section>
 			</div>
 		</div>
@@ -751,21 +805,6 @@
 				]
 			});
 
-			Reveal.configure({
-				keyboard: {
-					68: function () {
-						Reveal.configure({
-							//Навесим событие на клавишу D
-							//Покажим заметки
-							showNotes: (
-								Reveal.getConfig().showNotes ? 
-									false: true
-								)
-						});
-					}
-				}
-			});
-
 			//Функция поиска производной
 			let diffResult = (h, x) => {
 				return math.derivative(h,x);
@@ -851,9 +890,10 @@
 				let expand = Algebrite.expand(tangentString).toString();
 				//Костыль для устранения бага в библиотеке Algebrite
 				expand = expand.replace(/\.\.\./g,'');
+				expand = math.parse(expand).toTex();
 				//Рендерим наше уравнение в презентацию
-				katex.render(math.parse(expand).toTex(),
-					document.querySelector('#tangent'));
+				let tangentValue = document.querySelector('#tangent');
+				katex.render(expand, tangentValue);
 				//Рендерим точку касания в презентацию
 				katex.render('('+val+','+f+')',
 					document.querySelector('#tangentPoint'));
@@ -861,18 +901,76 @@
 
 			//Программа по поиску производной
 			let diff = () => {
-
+				//Парсим функцию из инпута expression
+				let h = math.parse(document.querySelector('#expression').value);
+				//Если в инпуте с переменной находится только переменная, то в результате
+				//выводим производную по этой переменной
+				if (document.querySelector('#variable').value.length == 1) {
+					//Парсим переменную дифференцирования из инпута
+					let x = math.parse(document.querySelector('#variable').value);
+					//Выводим производную в презенташку
+					katex.render(diffResult(h,x).toTex(), document.querySelector('#result'));
+				} else {
+					let variables = 
+						document.querySelector('#variable').value.split(',');
+					let values = {};
+					let x = variables[0].split('=')[0].trim();
+					for (let variable of variables) {
+						let is = variable.split('=');
+						values[is[0].trim()] = is[1].trim();
+					}
+					document.querySelector('#result').innerHTML = 
+						diffResult(h,x).evaluate(values);
+				}
 			}
 
 			//Программа по поиску скорости и ускорения
 			let speed = () => {
+				let h = math.parse(document.querySelector('#path').value);
+				let x = math.parse('x');
+				document.querySelector('#speed').innerHTML = 
+				diffResult(h,x).evaluate(
+					{x: document.querySelector('#point').value}
+				) + ' м/с';
+				document.querySelector('#acceleration').innerHTML =
+				diffResult(diffResult(h,x),x).evaluate(
+					{x: document.querySelector('#point').value}
+				) + ' м/c<sup>2</sup>';
+			}
 
+			let showNodes = () => {
+				Reveal.configure({
+					//Навесим событие на клавишу D
+					//Покажим заметки
+					showNotes: (
+						Reveal.getConfig().showNotes ? 
+							false: true
+						)
+				});
 			}
 
 			//Запускаем программы только после полной загрузки
 			window.onload = () =>  {
 				// Генерация таблицы производных сразу после загрузки презентации
 				diffTable();
+
+				document.querySelector('#noteswitch').onclick = showNodes;
+				Reveal.configure({
+					keyboard: {
+						68: showNodes
+					}
+				});
+
+				$('h3').each((i, j) => {$(i).html(`
+					<span class="offscreen">Заголовок слайда.</span>
+						${$(i).text()}
+					<span class="offscreen">.</span>
+				`)});
+
+				$('aside').after(`<span class="offscreen">
+					Конец слайда. Для продолжения нажмите
+					<kbd>Space</kbd>
+				</span>`);
 
 				//События отжатия клавиши в программе поиска производной
 				document.querySelector('#expression').onkeyup = diff;
