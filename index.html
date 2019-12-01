@@ -911,14 +911,23 @@
 					//Выводим производную в презенташку
 					katex.render(diffResult(h,x).toTex(), document.querySelector('#result'));
 				} else {
+					//Если в инпуте больше 1 знака, то значит там должна быть частная производная
+					//по первой переменной с указанием точки диффиренцирования
+					//Получаем список переменной, разбив строчку по запятой
 					let variables = 
 						document.querySelector('#variable').value.split(',');
+					//Объект. Переменная -> Значение
 					let values = {};
+					//Разбиваем первую переменную по равно, 
+					//чтобы получить переменную дифференцирования
 					let x = variables[0].split('=')[0].trim();
+					//В цикле разбивает каждую переменную по равно и
+					//собираем наш объект для функции вычисления
 					for (let variable of variables) {
 						let is = variable.split('=');
 						values[is[0].trim()] = is[1].trim();
 					}
+					//В презенташку вставляем получившиеся число
 					document.querySelector('#result').innerHTML = 
 						diffResult(h,x).evaluate(values);
 				}
@@ -926,18 +935,25 @@
 
 			//Программа по поиску скорости и ускорения
 			let speed = () => {
+				//Парсим функцию перемещения
 				let h = math.parse(document.querySelector('#path').value);
+				//Парсим абциссу
 				let x = math.parse('x');
+				//Вычисляем значение функции первой производной -
+				//это и будет скорость, и записываем в презенташку
 				document.querySelector('#speed').innerHTML = 
 				diffResult(h,x).evaluate(
 					{x: document.querySelector('#point').value}
 				) + ' м/с';
+				//Вычисляем значение функции второй производной -
+				//это и будет ускорение, и записываем в презенташку
 				document.querySelector('#acceleration').innerHTML =
 				diffResult(diffResult(h,x),x).evaluate(
 					{x: document.querySelector('#point').value}
 				) + ' м/c<sup>2</sup>';
 			}
 
+			//Функция для включения и выключения заметок слайда
 			let showNodes = () => {
 				Reveal.configure({
 					//Навесим событие на клавишу D
@@ -954,6 +970,7 @@
 				// Генерация таблицы производных сразу после загрузки презентации
 				diffTable();
 
+				//Открываем заметки или по кнопке или по клавише D
 				document.querySelector('#noteswitch').onclick = showNodes;
 				Reveal.configure({
 					keyboard: {
@@ -961,12 +978,14 @@
 					}
 				});
 
+				//Делаем слайды инклюзивными, заменив заголовок
 				$('h3').each((i, j) => {$(i).html(`
 					<span class="offscreen">Заголовок слайда.</span>
 						${$(i).text()}
 					<span class="offscreen">.</span>
 				`)});
 
+				//Делаем слайды инклюзивными, добавив окончание слайда
 				$('aside').after(`<span class="offscreen">
 					Конец слайда. Для продолжения нажмите
 					<kbd>Space</kbd>
