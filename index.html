@@ -14,6 +14,10 @@
 
 		<!-- Theme used for syntax highlighting of code -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
+		
+		<!--Fonts-->
+		<link rel="stylesheet" 
+			href="css/font-awesome-4.3.0/css/font-awesome.min.css">
 
 		<!-- Printing and PDF exports -->
 		<script>
@@ -49,20 +53,20 @@
 
 	</head>
 	<body>
-
-		<!-- Кнопка для включения и отключения субтитр -->
-		<div class="chalkboard-button" id="toggle-chalkboard" 
-			style="position: absolute; z-index: 30; font-size: 24px;
-			left: 20px; bottom: 30px;" >
-			<a href="#" id="noteswitch" title="Включение/отключение
-				заметок к слайду">
-				<i class="fa fa-sticky-note" aria-label="
-				Заметки к слайду"></i>
-			</a>
-		</div>
-
 		<!-- Разметка презентации -->
 		<div class="reveal">
+
+			<!-- Кнопка для включения и отключения субтитр -->
+			<div class="chalkboard-button" id="toggle-chalkboard" 
+				style="position: fixed; z-index: 30; font-size: 22px;
+				left: 60px; bottom: 32px;" >
+				<a href="#" id="noteswitch" title="Включение/отключение
+					заметок к слайду">
+					<i class="fa fa-sticky-note" aria-label="
+					Заметки к слайду"></i>
+				</a>
+			</div>
+
 			<div class="slides">
 
 				<section data-markdown data-separator-notes="^Note:">
@@ -259,8 +263,13 @@
 					</script>
 				</section>
 
-				<!-- Dinamic silde -->
-				<section id="diffTable">
+				<!-- Dinamic slide -->
+				<section id="diffTable" data-menu-title="Таблица производных">
+
+					<aside class="notes">
+						Таблица производных, сгенерированная
+						с помощью Math.JS
+					</aside>
 				</section>
 
 				<section data-markdown data-separator-notes="^Note:">
@@ -443,13 +452,17 @@
 				<section>
 					<h3>Поиск производной</h3>
 					<label> Функция:
-						<input type="text" value="cos(x*y)" id="expression">
+						<input type="text" value="" id="expression">
 					</label>
 					<label> Переменная:
-						<input type="text" value="x=3,y=4" id="variable">
+						<input type="text" value="" id="variable">
 					</label>
 					Производная:
 					<output id="result"></output>
+
+					<aside class="notes">
+						Программа по поиску производной.
+					</aside>
 				</section>
 
 				<section data-markdown data-separator-notes="^Note:">
@@ -515,15 +528,19 @@
 				<section>
 					<h3>Поиск скорости и ускорения</h3>
 					<label> Путь:
-						<input type="text" value="x^4+6x^2+cos(x)+1" id="path">
+						<input type="text" value="" id="path">
 					</label>
 					<label> Точка:
-						<input type="text" value="12" id="point"> <br>
+						<input type="text" value="" id="point"> <br>
 					</label>
 					Скорость:
 					<output id="speed"></output> <br>
 					Ускорение:
-					<output id="acceleration"></output> <br>
+					<output id="acceleration"></output>
+
+					<aside class="notes">
+						Программа по поиску скорости и ускорения
+					</aside>
 				</section>
 
 				<section data-markdown data-separator-notes="^Note:">
@@ -600,12 +617,20 @@
 					Уравнение касательной:
 					<output id="tangent"></output>
 					<div id="plot" style="height: 400px;"></div>
+
+					<aside class="notes">
+						Программа по нахождению уравнения касательной
+						и построения её графика
+					</aside>
 				</section>
 
 				<section data-markdown data-separator-notes="^Note:">
 					<script type="text/template">
 						Исходный код
 						------------
+
+						Note:
+						Исходный код программ
 					</script>
 				</section>
 
@@ -655,6 +680,10 @@
 								"display:block; top:0";
 						}
 						```
+
+						Note:
+						Исходный код программы генерации таблицы
+						производных
 					</script>
 				</section>
 
@@ -662,6 +691,45 @@
 					<script type="text/template">
 						### Поиск производных
 
+						```
+						//Программа по поиску производной
+						let diff = () => {
+							//Парсим функцию из инпута expression
+							let h = math.parse(document.querySelector('#expression').value);
+							//Если в инпуте с переменной находится только переменная, то в результате
+							//выводим производную по этой переменной
+							if (document.querySelector('#variable').value.length == 1) {
+								//Парсим переменную дифференцирования из инпута
+								let x = math.parse(document.querySelector('#variable').value);
+								//Выводим производную в презенташку
+								katex.render(diffResult(h,x).toTex(), document.querySelector('#result'));
+							} else {
+								//Если в инпуте больше 1 знака, то значит там должна быть частная производная
+								//по первой переменной с указанием точки диффиренцирования
+								//Получаем список переменной, разбив строчку по запятой
+								let variables = 
+									document.querySelector('#variable').value.split(',');
+								//Объект. Переменная -> Значение
+								let values = {};
+								//Разбиваем первую переменную по равно, 
+								//чтобы получить переменную дифференцирования
+								let x = variables[0].split('=')[0].trim();
+								//В цикле разбивает каждую переменную по равно и
+								//собираем наш объект для функции вычисления
+								for (let variable of variables) {
+									let is = variable.split('=');
+									values[is[0].trim()] = is[1].trim();
+								}
+								//В презенташку вставляем получившиеся число
+								document.querySelector('#result').innerHTML = 
+									diffResult(h,x).evaluate(values);
+							}
+						}
+						```
+
+						Note:
+						Исходный код программы поиска производной,
+						с помощью Math.JS
 					</script>
 				</section>
 
@@ -669,6 +737,31 @@
 					<script type="text/template">
 						### Мгновенная скорость и ускорение
 
+						```
+						//Программа по поиску скорости и ускорения
+						let speed = () => {
+							//Парсим функцию перемещения
+							let h = math.parse(document.querySelector('#path').value);
+							//Парсим абциссу
+							let x = math.parse('x');
+							//Вычисляем значение функции первой производной -
+							//это и будет скорость, и записываем в презенташку
+							document.querySelector('#speed').innerHTML = 
+							diffResult(h,x).evaluate(
+								{x: document.querySelector('#point').value}
+							) + ' м/с';
+							//Вычисляем значение функции второй производной -
+							//это и будет ускорение, и записываем в презенташку
+							document.querySelector('#acceleration').innerHTML =
+							diffResult(diffResult(h,x),x).evaluate(
+								{x: document.querySelector('#point').value}
+							) + ' м/c<sup>2</sup>';
+						}
+						```
+
+						Note:
+						Исходный код программы поиска мгновенной
+						скорости и ускорения с помощью Math.JS
 					</script>
 				</section>
 
@@ -676,6 +769,47 @@
 					<script type="text/template">
 						### Построение уравнения касательной
 
+						```
+
+						//Программа по нахождения уравнения касательной
+						let tangent = () => {
+							//Забираем наше выражение из input и парсим через math.js
+							let h = math.parse(document.querySelector('#func').value);
+							//Создаем переменную по котором будем дифференцировать
+							let x = math.parse('x');
+							//Забираем значение из инпута абциссы точки касания
+							let val = document.querySelector('#pointTan').value;
+							//Вычисляем значение функции в точке
+							let f = h.compile().evaluate({x:val});
+							//Собираем уравнение касательной по формуле ввиде строки
+							let tangent = diffResult(h,x).evaluate({x:val}) +
+								'(x-'+val+')+'+f;
+							//Парсим нашу строку через math.js для превращения формулы
+							//в нормальный вид
+							let tangentString = math.parse(tangent).toString();
+							//Раскрываем скобки
+							let expand = Algebrite.expand(tangentString).toString();
+							//Костыль для устранения бага в библиотеке Algebrite
+							expand = expand.replace(/\.\.\./g,'');
+							expandTex = math.parse(expand).toTex();
+							//Рендерим наше уравнение в презентацию
+							let tangentValue = document.querySelector('#tangent');
+							katex.render(expandTex, tangentValue);
+							//Рендерим точку касания в презентацию
+							katex.render('('+val+','+f+')',
+								document.querySelector('#tangentPoint'));
+			
+							plot(
+								document.querySelector('#func').value,
+								expand,
+								document.querySelector('#pointTan').value
+							);
+						}
+						```
+
+						Note:
+						Исходный код программы нахождения 
+						уравнения касательной с помощью Math.JS
 					</script>
 				</section>
 
@@ -683,30 +817,55 @@
 					<script type="text/template">
 						### График касательной
 
+						```
+						let plot = (expr, tangent, point) => {
+							const exprCompile = math.compile(expr);
+							const tangentCompile = math.compile(tangent);
+							const xValues = math.range(+point-1, +point+1, .1).toArray();
+							const yValues = xValues.map((x) => {
+								return tangentCompile.evaluate({x});
+							});
+							const yValues2 = xValues.map((x) => {
+								return exprCompile.evaluate({x});
+							});
+							const plot1 = {
+								x: xValues,
+								y: yValues,
+								type: 'scatter',
+							}
+							const plot2 = {
+								x: xValues,
+								y: yValues2,
+								type: 'scatter',
+							}
+							Plotly.newPlot('plot', [plot1, plot2]);
+						}
+						```
+
 						Note: Исходный код функции по построению
 							графика касательной
 					</script>
 				</section>
 
-				<section data-background="image/4.jpg">
+				<section data-background="image/4.jpg" data-menu-title="Изображение 1">
 					<aside class="notes">
 						Изображение слова Math
 					</aside>
 				</section>
 
-				<section data-background="image/15.jpg">
+				<section data-background="image/15.jpg" data-menu-title="Изображение 2">
 					<aside class="notes">
 						Изображение улитки Фибоначи
 					</aside>
 				</section>
 
-				<section data-background="image/2.jpg"  data-menu-title="Картинка">
+				<section data-background="image/2.jpg" data-menu-title="Изображение 3">
 					<aside class="notes">
 						Изображение транспортира и калькулятора
 					</aside>
 				</section>
 
-				<section data-markdown data-separator-notes="^Note:">
+				<section data-markdown data-separator-notes="^Note:" data-menu-title="Заключительный слайд">
 					<script type="text/template">
 						Спасибо за внимание
 					</script>
@@ -812,6 +971,8 @@
 
 			//Функция генерации таблицы прозводных
 			let diffTable = () => {
+				//Сохраняем наши заметки в переменную
+				let note = $('#diffTable .notes').html();
 				//Массив функций для таблицы
 				let func = [
 					'C', //Константа
@@ -862,6 +1023,9 @@
 					slide.innerHTML += '<p>'+katex.renderToString(`(${expression})' = ${diff}`) +'</p>';
 					//Как только достигли 7 строки или конца, то выводим наш слайд на экран
 					if (i%7 == 6 || func.length - i == 1) {
+						//Добавляем заметки к слайду
+						slide.innerHTML += `<aside class="notes">${note}</aside>`;
+						//Добавляем содержимое слайда в презенташку
 						document.querySelector('#diffTable').appendChild(slide);
 					}
 				}
@@ -890,13 +1054,22 @@
 				let expand = Algebrite.expand(tangentString).toString();
 				//Костыль для устранения бага в библиотеке Algebrite
 				expand = expand.replace(/\.\.\./g,'');
-				expand = math.parse(expand).toTex();
+				expandTex = math.parse(expand).toTex();
 				//Рендерим наше уравнение в презентацию
 				let tangentValue = document.querySelector('#tangent');
-				katex.render(expand, tangentValue);
+				katex.render(expandTex, tangentValue);
 				//Рендерим точку касания в презентацию
 				katex.render('('+val+','+f+')',
 					document.querySelector('#tangentPoint'));
+				//Нарисуем график функции и её касательной
+				plot(
+					//Функция
+					document.querySelector('#func').value,
+					//Касательная
+					expand,
+					//Абцисса точки касания
+					document.querySelector('#pointTan').value
+				);
 			}
 
 			//Программа по поиску производной
@@ -963,6 +1136,39 @@
 							false: true
 						)
 				});
+				return false;
+			}
+
+			//Функция построения графика функции и её касательной
+			let plot = (expr, tangent, point) => {
+				//Парсим нашу функцию
+				const exprCompile = math.compile(expr);
+				//Парсим уравнение касательной
+				const tangentCompile = math.compile(tangent);
+				//Создаем сетку для интерполирования функции
+				const xValues = math.range(+point-1, +point+1, .1).toArray();
+				//Получаем значение касательной в заданных точках
+				const yValues = xValues.map((x) => {
+					return tangentCompile.evaluate({x});
+				});
+				//Получаем значение функции в заданых точках 
+				const yValues2 = xValues.map((x) => {
+					return exprCompile.evaluate({x});
+				});
+				//Собираем график касательной
+				const plot1 = {
+					x: xValues,
+					y: yValues,
+					type: 'scatter',
+				}
+				//Собираем график функции
+				const plot2 = {
+					x: xValues,
+					y: yValues2,
+					type: 'scatter',
+				}
+				//Рисуем графики plot1 и plot2 в id plot 
+				Plotly.newPlot('plot', [plot1, plot2]);
 			}
 
 			//Запускаем программы только после полной загрузки
